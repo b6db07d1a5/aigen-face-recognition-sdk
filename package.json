@@ -1,6 +1,6 @@
 {
   "name": "@b6db07d1a5/aigen-face-recognition-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "aigen-face-recognition-sdk",
   "main": "dist/aigen-face-recognition-sdk.js",
   "husky": {
