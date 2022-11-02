@@ -1,6 +1,6 @@
 {
-  "name": "@aigen/aigen-sdk",
-  "version": "1.0.1",
+  "name": "@b6db07d1a5/aigen-sdk",
+  "version": "1.0.2",
   "description": "aigen-sdk",
   "main": "dist/aigen-sdk.js",
   "husky": {
