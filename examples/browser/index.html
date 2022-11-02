@@ -3,18 +3,11 @@
     <title>Test Calculator</title>
   </head>
   <body>
-    <script type="module">
-      import { add, sub } from './aigen-face-recognition-sdk.js'
-
+    <script src="./aigen-face-recognition-sdk.js"></script>
+    <script>
+      const { add, sub } = new AIGEN()
       console.log('1 + 2 = ' + add(1, 2))
       console.log('2 - 1 = ' + sub(2, 1))
     </script>
-
-    <!-- <script src="./aigen-face-recognition-sdk.js"></script>
-    <script>
-      const { add, sub } = aigen - face - recognition - sdk
-      console.log('1 + 2 = ' + add(1, 2))
-      console.log('2 - 1 = ' + sub(2, 1))
-    </script> -->
   </body>
 </html>
