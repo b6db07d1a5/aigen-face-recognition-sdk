@@ -1,8 +1,8 @@
 {
-  "name": "@b6db07d1a5/aigen-face-recognition-sdk",
+  "name": "@aigen/aigen-sdk",
   "version": "1.0.1",
-  "description": "aigen-face-recognition-sdk",
-  "main": "dist/aigen-face-recognition-sdk.js",
+  "description": "aigen-sdk",
+  "main": "dist/aigen-sdk.js",
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
@@ -12,8 +12,8 @@
     "access": "public"
   },
   "scripts": {
-    "build:browser": "webpack && cp dist/aigen-face-recognition-sdk.js examples/browser",
-    "build:node": "webpack && cp dist/aigen-face-recognition-sdk.js examples/node/ && node examples/node/example.js",
+    "build:browser": "webpack && cp dist/aigen-sdk.js examples/browser",
+    "build:node": "webpack && cp dist/aigen-sdk.js examples/node/ && node examples/node/example.js",
     "build": "webpack",
     "semantic-release": "semantic-release",
     "release": "release-it"

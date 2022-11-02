@@ -1,4 +1,4 @@
-const AIGEN = require('./aigen-face-recognition-sdk.js')
+const AIGEN = require('./aigen-sdk.js')
 
 const { add, sub } = new AIGEN()
 

@@ -4,7 +4,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'aigen-face-recognition-sdk.js',
+    filename: 'aigen-sdk.js',
     library: 'AIGEN',
     libraryTarget: 'umd',
     globalObject: 'this',
