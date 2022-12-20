@@ -26,69 +26,66 @@ export async function startLivenessDetection(args) {
 
     args.finishCallback(result)
   })()
+}
 
-  async function doProcess(args) {
-    const { getSequence, postLiveness, faceTracing, sequenceCallback, camera } = args
+async function doProcess(args) {
+  const { getSequence, postLiveness, faceTracing, sequenceCallback, camera } = args
 
-    const { request_id, next_choice } = await getSequence()
+  const { request_id, next_choice } = await getSequence()
 
-    faceTracing(next_choice)
+  faceTracing(next_choice)
 
-    let frame = 0
-    let maxFrame = 10 //process frame per choice
-    let isAlive = false
+  let frame = 0
+  let maxFrame = 10 //process frame per choice
+  let isAlive = false
 
-    function setSetFrame() {
-      frame = 0
-    }
+  function setSetFrame() {
+    frame = 0
+  }
 
-    function setAlive(alive) {
-      isAlive = alive
-    }
+  function setAlive(alive) {
+    isAlive = alive
+  }
 
-    while (frame < maxFrame) {
-      const image = cameraCapture(camera)
+  while (frame < maxFrame) {
+    const image = cameraCapture(camera)
 
-      try {
-        const { result, status, next_choice } = await postLiveness({
-          image,
-          request_id,
-        })
+    try {
+      const { result, status, next_choice } = await postLiveness({
+        image,
+        request_id,
+      })
 
-        if (status === 'completed') {
-          setAlive(true)
-          //faceTracing(status)
-
-          break
-        }
-
-        if (status === 'uncompleted') {
-          setAlive(false)
-
-          console.log('====> uncompleted')
-          break
-        }
-
-        if (result === 'Yes' && status === 'processing') {
-          await sleep(1500)
-          setSetFrame()
-          sequenceCallback({ result, status })
-          faceTracing(next_choice)
-        }
-
-        if (result === 'No' && status === 'processing') {
-          await sleep(1500)
-          faceTracing(next_choice)
-        }
-      } catch (error) {
-        console.log(error)
+      if (status === 'completed') {
+        setAlive(true)
+        break
       }
 
-      frame++
+      if (status === 'uncompleted') {
+        setAlive(false)
+        break
+      }
+
+      if (result === 'Yes' && status === 'processing') {
+        setSetFrame()
+        sequenceCallback({ result, status })
+
+        faceTracing(next_choice)
+        await sleep(5000)
+      }
+
+      if (result === 'No' && status === 'processing') {
+        faceTracing(next_choice)
+        await sleep(1500)
+      }
+    } catch (error) {
+      throw error
     }
 
-    return { isAlive }
+    frame++
   }
+
+  return { isAlive }
 }
 
 function sleep(ms) {
