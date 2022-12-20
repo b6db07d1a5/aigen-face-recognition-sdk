@@ -28,7 +28,7 @@ export async function startLivenessDetection(args) {
   })()
 
   async function doProcess(args) {
-    const { getSequence, postLiveness, faceTracing, camera } = args
+    const { getSequence, postLiveness, faceTracing, sequenceCallback, camera } = args
 
     const { request_id, next_choice } = await getSequence()
 
@@ -72,6 +72,7 @@ export async function startLivenessDetection(args) {
         if (result === 'Yes' && status === 'processing') {
           await sleep(1500)
           setSetFrame()
+          sequenceCallback({ result, status })
           faceTracing(next_choice)
         }
 
