@@ -62,6 +62,13 @@ export async function startLivenessDetection(args) {
           break
         }
 
+        if (status === 'uncompleted') {
+          setAlive(false)
+
+          console.log('====> uncompleted')
+          break
+        }
+
         if (result === 'Yes' && status === 'processing') {
           await sleep(1500)
           setSetFrame()
