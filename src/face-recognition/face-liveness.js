@@ -1,5 +1,7 @@
 // faceliveness utilities
 
+const { FaceDetector, FilesetResolver } = require('@mediapipe/tasks-vision')
+
 export async function startLivenessDetection(args) {
   let attempt = 0
   let maxAttempt = 3
@@ -138,4 +140,36 @@ export const actions = {
 
 export function livenessTest() {
   return 'liveness test'
+}
+
+export async function initializefaceDetector() {
+  const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm')
+  const faceDetector = await FaceDetector.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
+      delegate: 'GPU',
+    },
+    runningMode: 'VIDEO',
+    minDetectionConfidence: 0.9,
+  })
+
+  return faceDetector
+}
+
+export function pitch(earLeft, earRight, nose) {
+  const eyeMidpoint = { x: (earLeft.x + earRight.x) / 2, y: (earLeft.y + earRight.y) / 2 }
+  const deltaY = eyeMidpoint.y - nose.y - (earRight.x - earLeft.x) / 10
+  const fixedDistance = Math.abs((earLeft.x - earRight.x) / 2)
+  const pitchRadians = Math.atan2(deltaY, fixedDistance)
+  const pitchDegrees = pitchRadians * (180 / Math.PI)
+  return pitchDegrees
+}
+
+export function yaw(earLeft, earRight, nose) {
+  const eyeMidpoint = { x: (earLeft.x + earRight.x) / 2, y: (earLeft.y + earRight.y) / 2 }
+  const deltaX = eyeMidpoint.x - nose.x
+  const fixedDistance = Math.abs((earLeft.x - earRight.x) / 2)
+  const yawRadians = Math.atan2(deltaX, fixedDistance)
+  const yawDegrees = yawRadians * (180 / Math.PI)
+  return yawDegrees
 }
