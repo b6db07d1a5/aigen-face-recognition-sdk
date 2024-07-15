@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'aigen-sdk.js',
-    library: 'AIGEN',
+    library: 'aigenSDK',
     libraryTarget: 'umd',
     globalObject: 'this',
   },
