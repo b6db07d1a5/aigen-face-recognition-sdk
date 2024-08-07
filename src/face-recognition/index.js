@@ -3,6 +3,14 @@ const { FilesetResolver, FaceDetector } = require('@mediapipe/tasks-vision')
 const wasmPath = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
 const modelAssetPath = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'
 
+export const POSE = {
+  LEFT: 'Turn_left',
+  RIGHT: 'Turn_right',
+  UP: 'Look_up',
+  DOWN: 'Look_down',
+  CENTER: 'Center',
+}
+
 export async function initializeFaceDetector() {
   const vision = await FilesetResolver.forVisionTasks(wasmPath)
 
@@ -15,7 +23,7 @@ export async function initializeFaceDetector() {
   })
 }
 
-export function detectForVideo(faceDetector, startTimeMs) {
+export function detectForVideo(video, faceDetector, startTimeMs) {
   const detections = faceDetector.detectForVideo(video, startTimeMs).detections
 
   if (detections.length === 1) {
@@ -26,10 +34,27 @@ export function detectForVideo(faceDetector, startTimeMs) {
     const pitch = calculatePitch(earLeft, eatRight, nose)
     const yaw = calculateYaw(earLeft, eatRight, nose)
 
-    if (nose.x < 0.5 && nose.x > 0.3 && pitch > -10 && pitch < 10 && yaw > -10 && yaw < 10) {
-      checkBestFace = true
+    const scale = 25
+
+    const centerY = yaw < scale && yaw > -scale
+    const centerX = pitch < scale && pitch > -scale
+
+    if (pitch > scale && centerY) {
+      return { pitch, yaw, pose: POSE.UP }
+    } else if (pitch < -scale && centerY) {
+      return { pitch, yaw, pose: POSE.DOWN }
+    } else if (yaw > scale && centerX) {
+      return { pitch, yaw, pose: POSE.RIGHT }
+    } else if (yaw < -scale && centerX) {
+      return { pitch, yaw, pose: POSE.LEFT }
+    } else if (centerY && centerX && nose.x < 0.55 && nose.x > 0.45 && nose.y < 0.7 && nose.y > 0.3) {
+      return { pitch, yaw, pose: POSE.CENTER }
     }
+
+    return null
   }
+
+  return null
 }
 
 export function calculatePitch(earLeft, earRight, nose) {
